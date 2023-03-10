@@ -1,0 +1,8 @@
+ca-gen/*
+!ca-gen/generate_client_host_ca_pair.sh
+
+client-gen/*
+!client-gen/generate_signed_client_pair.sh
+
+host-gen/*
+!host-gen/generate_signed_host_pair.sh
