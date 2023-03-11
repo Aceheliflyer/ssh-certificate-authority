@@ -13,12 +13,14 @@ NC='\033[0m'
 # Variables
 host_domain="nuclear.achlfr.dev"
 expiration_days=365
-host_ssh_dir="${host_domain}"
+
+host_ssh_filename="ssh_host_${host_domain}_ed25519"
 host_ca_filename="ssh_host_ed25519_ca"
+host_ssh_dir="${host_domain}"
 host_ca_dir="../ca-gen/host_ca"
 
-# Create directory for the user
-mkdir -p "${host_ssh_dir}"
+host_ssh_path="${host_ssh_dir}/${host_ssh_filename}"
+host_ca_path="${host_ca_dir}/${host_ca_filename}"
 
 # Prompt for passphrases
 echo
@@ -32,7 +34,7 @@ echo -e "${BLUE}Done.${NC}\n"
 # Generate a new SSH key pair for the host
 echo -e "${YELLOW}Generating host SSH key...${NC}"
 ssh-keygen -t ed25519 \
-  -f "${host_ssh_dir}/ssh_host_${host_domain}_ed25519" \
+  -f "${host_ssh_path}" \
   -N "" \
   -C "root@${host_domain}"
 echo -e "${BLUE}Done.${NC}\n"
@@ -40,14 +42,13 @@ echo -e "${BLUE}Done.${NC}\n"
 
 # Sign the public key with the SSH CA
 echo -e "${YELLOW}Signing host SSH key...${NC}"
-ssh-keygen -s "${host_ca_dir}/${host_ca_filename}" \
+ssh-keygen -s "${host_ca_path}" \
   -I "root@${host_domain}" \
   -h \
   -n "${host_domain}" \
   -V "+${expiration_days}d" \
   -P "${host_ca_passphrase}" \
-  "${host_ssh_dir}/ssh_host_${host_domain}_ed25519.pub"
+  "${host_ssh_path}.pub"
 echo -e "${BLUE}Done.${NC}\n"
 
 echo -e "${GREEN}Successfully generated signed host keys!${NC}"
-echo -e "host SSH key pair: ${BLUE}${host_ssh_dir}/ssh_host_${host_domain}_ed25519${NC} ${BLUE}${host_ssh_dir}/ssh_host_${host_domain}_ed25519.pub${NC}"
