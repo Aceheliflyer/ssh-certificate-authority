@@ -34,12 +34,20 @@ echo -e "${BLUE}Done.${NC}\n"
 
 # Generate a new SSH key pair for the user
 echo -e "${YELLOW}Generating client SSH key...${NC}"
-ssh-keygen -t ed25519 -f "${client_ssh_dir}/ssh_client_${username}_ed25519" -N "${client_ca_passphrase}" -C "${username}@${ca_domain}"
+ssh-keygen -t ed25519 \
+  -f "${client_ssh_dir}/ssh_client_${username}_ed25519" \
+  -N "${client_ca_passphrase}" \
+  -C "${username}@${ca_domain}"
 echo -e "${BLUE}Done.${NC}\n"
 
 # Sign the public key with the SSH CA
 echo -e "${YELLOW}Signing client SSH key...${NC}"
-ssh-keygen -s "${client_ca_dir}/${client_ca_filename}" -I "${username}@${ca_domain}" -n "${username}" -V "+${expiration_days}d" -P "${host_ca_passphrase}" "${client_ssh_dir}/ssh_client_${username}_ed25519.pub"
+ssh-keygen -s "${client_ca_dir}/${client_ca_filename}" \
+  -I "${username}@${ca_domain}" \
+  -n "${username}" \
+  -V "+${expiration_days}d" \
+  -P "${host_ca_passphrase}" \
+  "${client_ssh_dir}/ssh_client_${username}_ed25519.pub"
 echo -e "${BLUE}Done.${NC}\n"
 
 echo -e "${GREEN}Successfully generated signed client keys!${NC}"

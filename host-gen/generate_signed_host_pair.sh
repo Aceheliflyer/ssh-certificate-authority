@@ -31,13 +31,22 @@ echo -e "${BLUE}Done.${NC}\n"
 
 # Generate a new SSH key pair for the host
 echo -e "${YELLOW}Generating host SSH key...${NC}"
-ssh-keygen -t ed25519 -f "${host_ssh_dir}/ssh_host_${host_domain}_ed25519" -N "" -C "root@${host_domain}"
+ssh-keygen -t ed25519 \
+  -f "${host_ssh_dir}/ssh_host_${host_domain}_ed25519" \
+  -N "" \
+  -C "root@${host_domain}"
 echo -e "${BLUE}Done.${NC}\n"
 
 
 # Sign the public key with the SSH CA
 echo -e "${YELLOW}Signing host SSH key...${NC}"
-ssh-keygen -s "${host_ca_dir}/${host_ca_filename}" -I "root@${host_domain}" -h -n "${host_domain}" -V "+${expiration_days}d" -P "${host_ca_passphrase}" "${host_ssh_dir}/ssh_host_${host_domain}_ed25519.pub"
+ssh-keygen -s "${host_ca_dir}/${host_ca_filename}" \
+  -I "root@${host_domain}" \
+  -h \
+  -n "${host_domain}" \
+  -V "+${expiration_days}d" \
+  -P "${host_ca_passphrase}" \
+  "${host_ssh_dir}/ssh_host_${host_domain}_ed25519.pub"
 echo -e "${BLUE}Done.${NC}\n"
 
 echo -e "${GREEN}Successfully generated signed host keys!${NC}"
